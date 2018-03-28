@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JSShell</title>
+  <script src="lib.js" charset="utf-8"></script>
+  <script src="jssh-linux.js" charset="utf-8"></script>
+  <style media="screen">
+    div.code {
+      background-color: black;
+      color: white;
+      font-family: monospace;
+      font-weight: bold;
+      white-space: pre;
+    }
+    body {
+      background-color: black;
+      color: white;
+    }
+    *:focus, *:active {
+      border: none;
+    }
+    button {
+      background-color: inherit;
+      color: inherit;
+      border-radius: 5px;
+      border-color: white;
+      border-style: solid;
+      margin: 2px;
+    }
+    [contenteditable]:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="code">
+  JSSH V1.0.0
+  Output will appear here.<hr/>
+<div id="output"><script>document.write(shell.vars.PS1)</script><span class="in" contenteditable></span></div></div>
+  <script type="text/javascript">
+    var code = document.getElementsByClassName('in')[0];
+    var last = "";
+    var cn = 0;
+    linux(shell);
+    code.focus();
+    function setCaretPosition(elemId, caretPos) {
+      var elem = document.getElementById(elemId);
+
+      if(elem != null) {
+          if(elem.createTextRange) {
+              var range = elem.createTextRange();
+              range.move('character', caretPos);
+              range.select();
+          }
+          else {
+              if(elem.selectionStart) {
+                  elem.focus();
+                  elem.setSelectionRange(caretPos, caretPos);
+              }
+              else
+                  elem.focus();
+          }
+      }
+    }
+    function registerEvents() {
+      code.onkeydown = function onkeydown(e) {
+        if(e.key == "Enter") {
+          cn++
+          document.getElementById('output').innerHTML += '\n';
+          shell.run(code.innerHTML, false);
+          last = code.innerHTML;
+          delete code.contenteditable;
+          document.getElementById('output').innerHTML += shell.vars.PS1 + "<span class='in' contenteditable></span>";
+          code = document.getElementsByClassName('in')[cn];
+          registerEvents();
+          code.focus();
+        } else if(e.key == "ArrowUp") {
+          code.innerHTML = last;
+          code.focus();
+          code.innerHTML = code.innerHTML;
+        }
+      };
+      code.onkeyup = function(e) {
+        if(e.key == "Enter") {
+          code.innerHTML = "";
+        }
+      };
+    }
+    shell.out = {
+      log(txt) {
+        document.getElementById('output').innerHTML += txt + "\n";
+      }
+    };
+    registerEvents();
+  </script>
+</body>
+</html>
