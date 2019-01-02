@@ -39,7 +39,7 @@
   <div class="code">
   JSSH V1.0.0
   Output will appear here.<hr/>
-<div id="output"><script>document.write(shell.vars.PS1)</script><span class="in" contenteditable></span></div></div>
+<span id="output"><script>document.write(shell.vars.PS1)</script><span class="in"></span></span><span>█</span></div>
   <script type="text/javascript">
     var code = document.getElementsByClassName('in')[0];
     var last = "";
@@ -66,14 +66,14 @@
       }
     }
     function registerEvents() {
-      code.onkeydown = function onkeydown(e) {
+      document.onkeydown = function onkeydown(e) {
         if(e.key == "Enter") {
           cn++
           document.getElementById('output').innerHTML += '\n';
           shell.run(code.innerHTML, false);
           last = code.innerHTML;
           delete code.contenteditable;
-          document.getElementById('output').innerHTML += shell.vars.PS1 + "<span class='in' contenteditable></span>";
+          document.getElementById('output').innerHTML += shell.vars.PS1 + "<span class='in'></span>";
           code = document.getElementsByClassName('in')[cn];
           registerEvents();
           code.focus();
@@ -81,6 +81,12 @@
           code.innerHTML = last;
           code.focus();
           code.innerHTML = code.innerHTML;
+        } else if (e.key == "Backspace") {
+          var txtArray = code.textContent.split("");
+       	  txtArray[txtArray.length - 1] = "";
+          code.textContent = txtArray.join("")
+        } else if(e.key.length > 1) {} else {
+            code.innerHTML += e.key;
         }
       };
       code.onkeyup = function(e) {

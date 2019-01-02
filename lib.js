@@ -1,6 +1,6 @@
 var color = function(c, s) {
   return `<span style='color: ${c}'>${s}</span>`;
-}
+};
 window.shell = {
   varRegex: /\$(\w+)/g,
   colorRegex: /\\color\((.*?)\s*\|\s*(.*?)\)/g,
@@ -25,7 +25,7 @@ window.shell = {
         shell.commands[argv[0]] = {
           "code": code,
           "parsed": true
-        }
+        };
         shell.out.log("Created function " + argv[0]);
       },
       "parsed": false
